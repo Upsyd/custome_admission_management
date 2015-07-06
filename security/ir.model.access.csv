@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_custome_admission_management_help_exam,custome.admission.management.Exam.manager,custome_admission_management.model_customadmission_customadmission,group_help_exam,1,1,1,1
+
