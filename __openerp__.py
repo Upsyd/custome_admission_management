@@ -27,14 +27,13 @@
     'website': 'http://www.browseinfo.in',
     'category': 'Admission Detail',
     'summary': 'Custom Admission Detail and Registration and Show the Custom Data',
-    'depends': ['website','survey'],
+    'depends': ['website','survey','hr_recruitment',],
     'description': """
 This is a simple Custom Admission Managment Process 
     """,
 
     'data': [
-        'security/exam_security.xml',
-        'security/ir.model.access.csv',
+        
         'data/data.xml', 
         'views/custom_admission_detail_view.xml', 
         'views/website_custom_admission_detail.xml',

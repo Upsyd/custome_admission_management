@@ -26,15 +26,26 @@ class customadmission_customadmission(http.Controller):
     @http.route(['/admission/success'], type='http', auth="public", website=True)
     def success(self, **form_data):
         cr, uid, context, pool = request.cr, request.uid, request.context, request.registry
-        orm_partner = request.registry.get('customadmission.customadmission')
         res_users = request.registry.get('res.users')
+        res_vals = {
+                    'name': form_data.get('fname'),
+                    'login':form_data.get('email'),
+                    'email':form_data.get('email'),
+                   }
+        print "SSSSSSSSSSSsss",res_vals
+        new_res_users = res_users.create(cr, SUPERUSER_ID, res_vals, context=context)
         res_partner = request.registry.get('res.partner')       
+        new_partner_users = res_partner.search(cr, SUPERUSER_ID,[('email','=',form_data.get('email'))], context=context)
+        print "mmmmkddskfkdskfkdkfkdksfksakfkdsfkdskfk_____-----",new_partner_users
+        hr_new_applicant = request.registry.get('hr.applicant')
         vals = {
-                    'name': form_data.get('fname') or False,
+                    'name':'Job Application From'+':'+form_data.get('fname') or False,
+                    'partner_name':form_data.get('fname') or False,
+                    'partner_id':new_partner_users[0] or False,
                     'mname':form_data.get('mname') or False,
                     'lname': form_data.get('lname') or False,
-                    'mobile': form_data.get('mobile') or False,
-                    'email':form_data.get('email') or False,
+                    'partner_mobile': form_data.get('mobile') or False,
+                    'email_from':form_data.get('email') or False,
                     'gender': form_data.get('gender'),
                     'dob': form_data.get('dob') or False,
                     'address': form_data.get('address'),
@@ -48,18 +59,20 @@ class customadmission_customadmission(http.Controller):
                     #'frmemail': 'odooparth@gmail.com',
                     }
         print "@@@@@@@@@@",vals, context
-        new_addmission = orm_partner.create(cr, SUPERUSER_ID, vals, context=context)
-        res_vals = {
-                    'name': form_data.get('fname'),
-                    'login':form_data.get('email'),
-                    'email':form_data.get('email'),
-                   }
-        print "SSSSSSSSSSSsss",res_vals
-        new_res_users = res_users.create(cr, SUPERUSER_ID, res_vals, context=context)
+        new_addmission = hr_new_applicant.create(cr, SUPERUSER_ID, vals, context=context)
+        
         access=request.registry.get('res.groups')
-        print "\n)))))))))))))))))))))))))))))",new_res_users
+        ir_mod_cat=request.registry.get('ir.module.category')
+        ir_mod_cat_id=ir_mod_cat.search(cr,SUPERUSER_ID,[('name','=','Human Resources')],context=context)
+        print "\n)))))))))))))))))))))))))))))",new_res_users,"\ncate====",ir_mod_cat_id
+        if ir_mod_cat_id:
+            hr_search_id=access.search(cr,SUPERUSER_ID,[('category_id','=',ir_mod_cat_id[0]),('name','=','Manager')],context=context)
+            print "hr_search_id=====>>>>",hr_search_id
+            hr_search_id_del=access.search(cr,SUPERUSER_ID,[('category_id','=',ir_mod_cat_id[0]),('name','=','Employee')],context=context)
         access_user=access.search(cr,SUPERUSER_ID,[('name','=','Survey / User')],context=context)
         grp_users=access.write(cr,SUPERUSER_ID,access_user,{'users': [(4,new_res_users)]},context)
+        grp_users=access.write(cr,SUPERUSER_ID,hr_search_id_del,{'users': [(3,new_res_users)]},context)
+        grp_users=access.write(cr,SUPERUSER_ID,hr_search_id,{'users': [(4,new_res_users)]},context)
         print access_user,"%%%%%%%%%%%%%%5access_user__________group_users",grp_users
         '''res_partner_vals={
                             'email':form_data.get('email'),

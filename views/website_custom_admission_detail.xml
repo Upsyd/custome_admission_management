@@ -2,21 +2,35 @@
 <openerp>
 <data>
 
-
+ <template id="assets_backend" name="custome_admission_management assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+         <script type="text/javascript" src="/custome_admission_management/static/src/js/ajax.js"></script> 
+<!--	<script type="text/javascript" src="/custome_admission_management/static/src/js/cal_firefox_1.js"></script>
+	<script type="text/javascript" src="/custome_admission_management/static/src/js/cal_firefox_2.js"></script>
+	<script type="text/javascript">
+  webshims.setOptions('waitReady', false);
+  webshims.setOptions('forms-ext', {types: 'date'});
+  webshims.polyfill('forms forms-ext');
+</script> -->
+        </xpath>
+    </template>
 
 <template id="admission" name="Admission">
  <t t-call="website.layout">
-
-<script type="text/javascript" src="/custome_admission_management/static/src/js/ajax.js"></script> 
-<script src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
-<!-- polyfiller file to detect and load polyfills -->
+<script type="text/javascript" src="http://cdn.jsdelivr.net/webshim/1.12.4/extras/modernizr-custom.js"></script>
 <script src="http://cdn.jsdelivr.net/webshim/1.12.4/polyfiller.js"></script>
-<script>
+<script type="text/javascript" src="/custome_admission_management/static/src/js/ajax.js"></script> 
+<!-- polyfiller file to detect and load polyfills -->
+
+
+	<script>
   webshims.setOptions('waitReady', false);
   webshims.setOptions('forms-ext', {types: 'date'});
   webshims.polyfill('forms forms-ext');
 </script>
  
+
+
 
    <section class="mb16">
         <div class="container">
@@ -45,7 +59,7 @@
   </div>
   <div class="form-group col-sm-6 col-xs-4">
     <label for="mobile">Mobile</label>
-    <input type="text" class="form-control bfh-phone" value="9999999999" data-format="+1 (ddd) ddd-dddd" maxlength="10" required="true" name="mobile" id="mobile" placeholder="Mobile"/>
+    <input type="text" class="form-control bfh-phone" placeholder="9999999999" data-format="+1 (ddd) ddd-dddd" maxlength="10" required="true" name="mobile" id="mobile"/>
   </div>
   <div class="form-group col-sm-6 col-xs-4">
     <label for="email">Email Address</label>
@@ -157,7 +171,7 @@
   
 
 <center>
-  <br/><br/><br/><br/><br/><br/><button type="submit" id="bt" class="btn-success">Submit</button></center>
+  <br/><br/><br/><br/><br/><br/><button type="submit" id="bt" class="btn-primary">Submit</button></center>
 </form><br/><br/>
           </div>
 </div>

@@ -27,17 +27,12 @@ from openerp.tools.translate import _
 
 
 
-class customadmission_customadmission(osv.osv):
-    _name = "customadmission.customadmission"
-    _description = "Custom Admission Detail and Registration and Show the Custom Data"
+class modify_hr_applicant(osv.osv):
+    _inherit = "hr.applicant"
+   
     _columns = {
-        'name' : fields.char('First Name',required=True),
-	'image':fields.binary('Image'),
         'mname' : fields.char('Middle Name'),
 	'lname' : fields.char('Last Name'),
-	'mobile': fields.char('Mobile'),
-	'email': fields.char('Email Address',required=True),
-	'cemail': fields.char('Confirm Email'),
 	'address' : fields.char('Street-1'),
 	'street2' : fields.char('Street-2'),
 	'gender': fields.selection([('m', 'Male'),('f', 'Female')],string="Gender"),
@@ -48,18 +43,59 @@ class customadmission_customadmission(osv.osv):
         'exp': fields.char('Experience'),
 	'year': fields.integer('Year of expirience'),
 	'month': fields.integer('Month of expirience'),
-	'frmemail': fields.char('From Email'),
     }
     
+    def write(self, cr, uid, ids, vals, context=None):
+        print '\n write of applicant',ids,vals,context
+        return super(modify_hr_applicant, self).write(cr, uid, ids, vals, context=context)
     
 class surve_new_result(osv.Model):
     _inherit = "survey.user_input"
+
     def _func_result(self, cr, uid, ids, name, args, context=None):
         ret = {}
+	print "uuuuuuuuuuuiiiiiidddddddddd======",uid
+	res_users=self.pool.get("res.users")
+	hr_req=self.pool.get("hr.recruitment.stage")
+	hr_appl=self.pool.get("hr.applicant")
         for user_input in self.browse(cr, uid, ids, context=context):
 	    if user_input.quizz_score > 60:
-            	ret[user_input.id]= "Pass"
+
+		res_partners_id=res_users.browse(cr, uid, uid, context=context).partner_id
+		print "res_partners_id=============",res_partners_id.id
+		hr_applicant_ids=hr_appl.search(cr,uid,[('partner_id','=',res_partners_id.id)],context=context)
+		print "hr_applicant_ids============",hr_applicant_ids
+		hr_applicant_id=''
+		
+		if isinstance(hr_applicant_ids, (list)):
+            	    hr_applicant_id = hr_applicant_ids[0]
+		    print "hr_applicant_id==============>>>>",hr_applicant_id		
+	
+		    hr_appl_id=hr_req.search(cr,uid,[('name','=','Second Interview')],context=context)
+		    stg_id=''		
+		    if isinstance(hr_appl_id, (list)):
+            	        stg_id = hr_appl_id[0]
+		        print "FFFFFfffffffffffiiinall_____id______",stg_id
+		    grp_users=hr_appl.write(cr,uid,hr_applicant_id,{'stage_id': stg_id },context)
+		ret[user_input.id]= "Pass"
+		  
 	    else:
+		
+		res_partners_id=res_users.browse(cr, uid, uid, context=context).partner_id
+		print "res_partners_id=============",res_partners_id.id
+		hr_applicant_ids=hr_appl.search(cr,uid,[('partner_id','=',res_partners_id.id)],context=context)
+		hr_applicant_id=''
+		
+		if isinstance(hr_applicant_ids, (list)):
+            	    hr_applicant_id = hr_applicant_ids[0]
+		    print "hr_applicant_id==============>>>>",hr_applicant_id
+	
+                    hr_appl_id=hr_req.search(cr,uid,[('name','=','Refused')],context=context)
+		    print "iiiiiiiiiiiiiiddddddddddddddddd_________",hr_appl_id
+		    if isinstance(hr_appl_id, (list)):
+            	        ids = hr_appl_id[0]
+		        print "FFFFFfffffffffffiiinall_____id______",ids
+		    grp_users=hr_appl.write(cr,uid,hr_applicant_id,{'stage_id': ids},context)
 		ret[user_input.id]= "Fail"
         return ret
 
@@ -67,11 +103,11 @@ class surve_new_result(osv.Model):
 		'score_result': fields.function(_func_result, type="char", string="Result"),
         
     }
-'''class exam_url(osv.Model):
-    _inherit="res.partner"
-    def _get_signup_url(self, cr, uid, ids, name, arg, context=None):
-	context={'exam':'exam'}
-        """ proxy for function field towards actual implementation """
-	print "hiiiiiiiiiiiiiiiiiiiiiii"
-        return self._get_signup_url_for_action(cr, uid, ids, context=context)
-'''
+    '''class exam_url(osv.Model):
+    	    _inherit="res.partner"
+    	    def _get_signup_url(self, cr, uid, ids, name, arg, context=None):
+		context={'exam':'exam'}
+    	        """ proxy for function field towards actual implementation """
+		print "hiiiiiiiiiiiiiiiiiiiiiii"
+            return self._get_signup_url_for_action(cr, uid, ids, context=context)
+     '''

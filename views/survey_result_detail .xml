@@ -7,7 +7,7 @@
             <div class="wrap">
                 <div class="container">
                     <div class="jumbotron mt32">
-                        <div t-if='survey.quizz_mode'><b>You Result:- <t &nbsp t-esc="user_input.score_result" /></b></div>
+                        <div t-if='survey.quizz_mode'><b>You Result:- <t t-esc="user_input.score_result" /></b></div>
                         
                     </div>
                 </div>

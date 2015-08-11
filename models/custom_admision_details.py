@@ -26,13 +26,3 @@ from openerp.osv import fields, osv
 from openerp.tools.translate import _
 
 
-
-class custaddmission_custaddmission(osv.Model):
-    _inherit = "customadmission.customadmission"
-    
-    _columns = {
-        
-    }
-
-
-
